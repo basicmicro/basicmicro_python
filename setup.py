@@ -11,7 +11,7 @@ setup(
     description="A modernized Python 3 library for controlling Basicmicro motor controllers",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/acidtech/basicmicro_python",
+    url="https://github.com/basicmicro/basicmicro_python",
     packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

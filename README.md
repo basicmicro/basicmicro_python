@@ -25,7 +25,7 @@ pip install basicmicro
 Clone the repository and install:
 
 ```bash
-git clone https://github.com/yourusername/basicmicro_python.git
+git clone https://github.com/basicmicro/basicmicro_python.git
 cd basicmicro_python
 pip install -e .
 ```
