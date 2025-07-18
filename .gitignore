@@ -26,3 +26,17 @@ env/
 
 #visual studio temp files
 .vs/
+
+# Memory system database
+project.db
+
+# Claude Code files
+CLAUDE.md
+generate_docs.py
+
+# Semantic release configuration (Claude managed)
+pyproject.toml
+.cz.toml
+
+# Changelog
+CHANGELOG.md
