@@ -252,4 +252,20 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.# Test change
-# Test docs
+
+---
+
+## Supported Hardware
+
+This library works with all current Basicmicro motor controllers:
+
+- **[RoboClaw Motor Controllers](https://www.basicmicro.com/motor-controller)** — Dual-channel brushed DC, 2×7A through 2×300A, up to 60VDC
+- **[MCP Industrial Motor Controllers](https://www.basicmicro.com/motor-controller-industrial)** — 30A to 60A continuous at 60VDC, CAN bus, RS-232, MCL scripting
+
+## Resources
+
+- **[Motion Studio](https://www.basicmicro.com/motor-controller-downloads)** — Free configuration and PID tuning software (Windows)
+- **[Datasheets, User Manuals & CAD](https://www.basicmicro.com/motor-controller-downloads)** — Datasheets, user manuals, CAD models and drawings
+- **[Tutorials & Guides](https://resources.basicmicro.com/)** — Articles, guides, and news
+- **[Contact Support](https://www.basicmicro.com/Contact_ep_7.html)** — Technical support and sales inquiries
+
