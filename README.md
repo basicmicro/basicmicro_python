@@ -252,6 +252,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
 ---
 
 ## Supported Hardware
@@ -267,5 +268,6 @@ This library works with all current Basicmicro motor controllers:
 - **[Datasheets, User Manuals & CAD](https://www.basicmicro.com/motor-controller-downloads)** — Datasheets, user manuals, CAD models and drawings
 - **[Tutorials & Guides](https://resources.basicmicro.com/)** — Articles, guides, and news
 - **[Contact Support](https://www.basicmicro.com/Contact_ep_7.html)** — Technical support and sales inquiries
+
 
 
