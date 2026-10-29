@@ -1,0 +1,44 @@
+name: docs-pdf
+
+# Regenerate docs/api_reference.pdf from docs/api_reference.md and commit it
+# when it changed. Build options live in scripts/build_pdf.sh.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/api_reference.md
+      - scripts/build_pdf.sh
+      - .github/workflows/docs-pdf.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Install pandoc, XeLaTeX and fonts
+        # lmodern: lmodern.sty and the Latin Modern Math font (unicode-math)
+        # texlive-latex-recommended: fontspec, unicode-math, microtype, parskip, xcolor, fancyvrb
+        # texlive-latex-extra: upquote, xurl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended fonts-dejavu-core lmodern texlive-latex-recommended texlive-latex-extra
+
+      - name: Build PDF
+        run: scripts/build_pdf.sh
+
+      - name: Commit PDF if changed
+        run: |
+          if git diff --quiet -- docs/api_reference.pdf; then
+            echo "docs/api_reference.pdf is unchanged"
+            exit 0
+          fi
+          git add docs/api_reference.pdf
+          git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "docs: regenerate api_reference.pdf"
+          git push origin HEAD:main
