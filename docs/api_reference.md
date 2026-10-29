@@ -1449,14 +1449,16 @@ Reads the PWM duty cycle values for both motors.
 
 Reads the command buffer status.
 
+To wait for a buffered move to finish, poll until the value reads 0x80 (idle). A value of 0 means the last command is still executing, so a wait that stops on 0 ends one command early.
+
 **Parameters**:
 - `address` (int): The address of the controller (0x80-0x87)
 
 **Returns**:
 - `tuple`: (success, buffer1, buffer2)
   - `success` (bool): True if read successful
-  - `buffer1` (int): Command buffer status for motor 1 (0 = empty, 1 = has command)
-  - `buffer2` (int): Command buffer status for motor 2 (0 = empty, 1 = has command)
+  - `buffer1` (int): Command buffer status for motor 1 (0x80 = idle, nothing buffered or executing; 0 = nothing queued but the last command is still executing; otherwise the number of queued commands)
+  - `buffer2` (int): Command buffer status for motor 2 (0x80 = idle, nothing buffered or executing; 0 = nothing queued but the last command is still executing; otherwise the number of queued commands)
 
 ### `GetSpeedErrors(address)`
 
@@ -1492,8 +1494,8 @@ print(f"PWM duty cycles: M1 = {pwm1/327.67:.1f}%, M2 = {pwm2/327.67:.1f}%")
 
 # Read buffer status
 success, buffer1, buffer2 = controller.ReadBuffers(address)
-if buffer1 == 0 and buffer2 == 0:
-    print("Both motor command buffers are empty")
+if buffer1 == 0x80 and buffer2 == 0x80:
+    print("Both motors are idle (nothing buffered or executing)")
 ```
 
 ## Configuration Functions

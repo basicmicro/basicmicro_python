@@ -97,7 +97,7 @@ def execute_sequence(controller, address, sequence):
             if cmd.get('wait_complete', False):
                 while True:
                     buffer_status = controller.ReadBuffers(address)
-                    if buffer_status[0] and buffer_status[1] == 0:
+                    if buffer_status[0] and buffer_status[1] == 0x80:  # 0x80 = idle; 0 = last command still running
                         break
                     time.sleep(0.1)
         
@@ -256,7 +256,7 @@ def main():
             logger.info("Queuing multiple buffered commands")
             
             # Command 1: Move forward 3000 counts at speed 1000
-            buffer1 = 1  # Use buffer
+            buffer1 = 0  # 0 = queue behind any buffered commands (1 = discard the buffer and run at once)
             controller.SpeedDistanceM1M2(
                 args.address, 
                 1000, 3000,  # M1 speed and distance
@@ -265,7 +265,7 @@ def main():
             )
             
             # Command 2: Rotate right 90 degrees
-            buffer2 = 1  # Use buffer
+            buffer2 = 0  # 0 = queue behind command 1
             controller.SpeedDistanceM1M2(
                 args.address, 
                 1000, 1500,   # M1 speed and distance (outer wheel)
@@ -274,7 +274,7 @@ def main():
             )
             
             # Command 3: Move forward 3000 counts at speed 1000
-            buffer3 = 1  # Use buffer
+            buffer3 = 0  # 0 = queue behind commands 1-2
             controller.SpeedDistanceM1M2(
                 args.address, 
                 1000, 3000,  # M1 speed and distance
@@ -284,7 +284,7 @@ def main():
             
             # Command 4: Return to home (reverse of the previous movements)
             # This command will execute after all the above are complete
-            buffer4 = 0  # Final command, don't buffer
+            buffer4 = 0  # 0 = queue behind commands 1-3
             controller.SpeedDistanceM1M2(
                 args.address, 
                 1000, 7500,   # M1 speed and distance (reverse of total distance)
@@ -301,8 +301,9 @@ def main():
                 if buffer_status[0]:
                     logger.info(f"Buffer status: {buffer_status[1]}")
                     
-                    # If buffer is empty, all commands are complete
-                    if buffer_status[1] == 0:
+                    # 0x80 = idle: buffer empty and the last command finished
+                    # (0 means the last command is still running)
+                    if buffer_status[1] == 0x80:
                         logger.info("All buffered commands completed")
                         break
                 

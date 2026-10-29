@@ -75,7 +75,7 @@ def main():
             distance = 10000  # encoder counts
             speed = 1500  # counts per second 
             accel = 800   # counts per second^2
-            buffer = 0    # 0 = don't buffer command
+            buffer = 0    # 0 = queue behind any buffered commands (1 = discard the buffer and run at once)
             
             logger.info(f"Moving motor 1 to position {distance} with speed {speed} and accel {accel}")
             controller.SpeedAccelDistanceM1(args.address, accel, speed, distance, buffer)
@@ -90,7 +90,7 @@ def main():
                     logger.info(f"Encoder: {enc[1]}, Buffer: {buffer_status[1]}")
                 
                 # Exit when buffer shows command is complete
-                if buffer_status[0] and buffer_status[1] == 0:
+                if buffer_status[0] and buffer_status[1] == 0x80:  # 0x80 = idle; 0 = last command still running
                     logger.info("Movement complete")
                     break
                     
@@ -105,7 +105,7 @@ def main():
             positions = [5000, 8000, 3000, 0]
             
             for pos in positions:
-                buffer = 0  # don't buffer command
+                buffer = 0  # 0 = queue behind any buffered commands
                 logger.info(f"Moving to absolute position: {pos}")
                 controller.PositionM1(args.address, pos, buffer)
                 
@@ -118,7 +118,7 @@ def main():
                         logger.info(f"Encoder: {enc[1]}, Buffer: {buffer_status[1]}")
                     
                     # Exit when buffer shows command is complete
-                    if buffer_status[0] and buffer_status[1] == 0:
+                    if buffer_status[0] and buffer_status[1] == 0x80:  # 0x80 = idle; 0 = last command still running
                         logger.info(f"Reached position {pos}")
                         break
                         
@@ -146,7 +146,7 @@ def main():
                     logger.info(f"Encoder: {enc[1]}, Buffer: {buffer_status[1]}")
                 
                 # Exit when buffer shows command is complete
-                if buffer_status[0] and buffer_status[1] == 0:
+                if buffer_status[0] and buffer_status[1] == 0x80:  # 0x80 = idle; 0 = last command still running
                     logger.info("Movement complete")
                     break
                     
@@ -159,7 +159,7 @@ def main():
             # Wait for move to complete
             while True:
                 buffer_status = controller.ReadBuffers(args.address)
-                if buffer_status[0] and buffer_status[1] == 0:
+                if buffer_status[0] and buffer_status[1] == 0x80:  # 0x80 = idle; 0 = last command still running
                     logger.info("Returned to home position")
                     break
                 time.sleep(0.5)

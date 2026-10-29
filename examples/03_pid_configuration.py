@@ -179,7 +179,7 @@ def main():
                 
                 # Move to a target position
                 target_pos = 5000
-                buffer = 0  # don't buffer command
+                buffer = 0  # 0 = queue behind any buffered commands (1 = discard the buffer and run at once)
                 logger.info(f"Moving Motor 1 to position {target_pos} to test Position PID...")
                 controller.PositionM1(args.address, target_pos, buffer)
                 
@@ -193,7 +193,7 @@ def main():
                         logger.info(f"Position: {enc[1]}, Error: {pos_errors[1]}, Buffer: {buffer_status[1]}")
                     
                     # Exit when position is reached
-                    if buffer_status[0] and buffer_status[1] == 0:
+                    if buffer_status[0] and buffer_status[1] == 0x80:  # 0x80 = idle; 0 = last command still running
                         logger.info(f"Reached position {target_pos}")
                         break
                         
@@ -206,7 +206,7 @@ def main():
                 # Wait for move to complete
                 while True:
                     buffer_status = controller.ReadBuffers(args.address)
-                    if buffer_status[0] and buffer_status[1] == 0:
+                    if buffer_status[0] and buffer_status[1] == 0x80:  # 0x80 = idle; 0 = last command still running
                         logger.info("Returned to home position")
                         break
                     time.sleep(0.2)

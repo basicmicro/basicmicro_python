@@ -210,7 +210,7 @@ def main():
             # Move both motors to specific positions
             position1 = 5000  # encoder counts
             position2 = 3000  # encoder counts
-            buffer = 0  # don't buffer command
+            buffer = 0  # 0 = queue behind any buffered commands (1 = discard the buffer and run at once)
             
             logger.info(f"Moving motors to positions: M1={position1}, M2={position2}")
             controller.PositionM1M2(args.address, position1, position2, buffer)
@@ -224,7 +224,7 @@ def main():
                     logger.info(f"Encoders - M1: {encoders[1]}, M2: {encoders[2]}")
                 
                 # Exit when buffer shows command is complete
-                if buffer_status[0] and buffer_status[1] == 0:
+                if buffer_status[0] and buffer_status[1] == 0x80:  # 0x80 = idle; 0 = last command still running
                     logger.info("Position move complete")
                     break
                     
@@ -237,7 +237,7 @@ def main():
             # Wait for move to complete
             while True:
                 buffer_status = controller.ReadBuffers(args.address)
-                if buffer_status[0] and buffer_status[1] == 0:
+                if buffer_status[0] and buffer_status[1] == 0x80:  # 0x80 = idle; 0 = last command still running
                     logger.info("Returned to home position")
                     break
                 time.sleep(0.5)
